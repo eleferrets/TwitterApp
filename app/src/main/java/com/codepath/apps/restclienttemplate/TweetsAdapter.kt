@@ -29,7 +29,7 @@ val context = parent.context
         // Set item views based on views and data model
         holder.tvUsername.text = tweet.user?.name
         holder.tvTweetBody.text = tweet.body
-        holder.tvTimestamp.text = Tweet.getFormattedTimestamp(tweet.createdAt).toString()
+        holder.tvTimestamp.text = tweet.getFormattedTimestamp()
 
         Glide.with(holder.itemView).load(tweet.user?.publicImageUrl).into(holder.ivProfileImage)
     }
