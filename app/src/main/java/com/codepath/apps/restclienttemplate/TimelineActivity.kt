@@ -18,6 +18,7 @@ class TimelineActivity : AppCompatActivity() {
     lateinit var adapter: TweetsAdapter
     lateinit var swipeContainer: SwipeRefreshLayout
     val tweets = ArrayList<Tweet>()
+    lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,40 +32,85 @@ class TimelineActivity : AppCompatActivity() {
             populateHomeTimeline()
         }
         // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        swipeContainer.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
-            android.R.color.holo_red_light)
+            android.R.color.holo_red_light
+        )
 
 
         rvTweets = findViewById(R.id.rvTweets)
         adapter = TweetsAdapter(tweets)
 
         rvTweets.layoutManager = LinearLayoutManager(this)
+        var linearLayoutManager = LinearLayoutManager(this)
+        scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+//                loadMoreData()
+            }
+        }
+        rvTweets.addOnScrollListener(scrollListener)
+
+
+
         rvTweets.adapter = adapter
 
         populateHomeTimeline()
     }
 
-    fun populateHomeTimeline(){
-        client.getHomeTimeline(object: JsonHttpResponseHandler(){
+//    fun loadMoreData() {
+//        // 1. Send an API request to retrieve appropriate paginated data
+//        // 2. Deserialize and construct new model objects from the API response
+//        // 3. Append the new data objects to the existing set of items inside the array of items
+//        // 4. Notify the adapter of the new items made with `notifyItemRangeInserted()`
+//        client.getNextPageOfTweets(object : JsonHttpResponseHandler() {
+//            override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
+//                Log.i(TAG, "onSuccess!")
+//                val jsonArray = json.jsonArray
+//                try {
+//                    val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
+//                    tweets.addAll(listOfNewTweetsRetrieved)
+//                    adapter.notifyItemRangeInserted()
+//
+//                } catch (e: JSONException) {
+//                    Log.e(TAG, "JSON Exception $e")
+//                }
+//            }
+//
+//            override fun onFailure(
+//                statusCode: Int,
+//                headers: Headers?,
+//                response: String?,
+//                throwable: Throwable?
+//            ) {
+//                Log.i(TAG, "onFailure $response $statusCode")
+//
+//            }
+//        })
+//    }
+
+    fun populateHomeTimeline() {
+        client.getHomeTimeline(object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
-        Log.i(TAG, "onSuccess!")
+                Log.i(TAG, "onSuccess!")
                 val jsonArray = json.jsonArray
                 try {
                     // Clear out our currently fetched tweets
                     adapter.clear()
-                val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
-                tweets.addAll(listOfNewTweetsRetrieved)
-                adapter.notifyDataSetChanged()
+                    val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
+                    tweets.addAll(listOfNewTweetsRetrieved)
+                    adapter.notifyDataSetChanged()
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false)
 
-                }
-                catch (e: JSONException) {
+                } catch (e: JSONException) {
                     Log.e(TAG, "JSON Exception $e")
                 }
             }
+
             override fun onFailure(
                 statusCode: Int,
                 headers: Headers?,
@@ -76,6 +122,7 @@ class TimelineActivity : AppCompatActivity() {
             }
         })
     }
+
     companion object {
         val TAG = "TimelineActivity"
     }

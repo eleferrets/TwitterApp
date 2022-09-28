@@ -11,10 +11,11 @@ import com.bumptech.glide.Glide
 import com.codepath.apps.restclienttemplate.models.Tweet
 import java.util.zip.Inflater
 
-class TweetsAdapter(val tweets: ArrayList<Tweet>): RecyclerView.Adapter<TweetsAdapter.ViewHolder>() {
+class TweetsAdapter(val tweets: ArrayList<Tweet>) :
+    RecyclerView.Adapter<TweetsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-val context = parent.context
+        val context = parent.context
         val inflater = LayoutInflater.from(context)
 
         // Inflate item layout
@@ -50,7 +51,7 @@ val context = parent.context
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivProfileImage = itemView.findViewById<ImageView>(R.id.ivProfileImage)
         val tvUsername = itemView.findViewById<TextView>(R.id.tvUsername)
         val tvTweetBody = itemView.findViewById<TextView>(R.id.tvTweetBody)

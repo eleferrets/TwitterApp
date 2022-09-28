@@ -11,6 +11,7 @@ class Tweet {
     fun getFormattedTimestamp(): String {
         return TimeFormatter.getTimeDifference(createdAt)
     }
+
     companion object {
         // Create one tweet
         fun fromJson(jsonObject: JSONObject): Tweet {

@@ -4,7 +4,7 @@ import org.json.JSONObject
 
 class User {
     var name: String = ""
-            var screenName: String = ""
+    var screenName: String = ""
     var publicImageUrl: String = ""
 
     companion object {
