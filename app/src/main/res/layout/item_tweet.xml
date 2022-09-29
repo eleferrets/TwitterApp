@@ -36,6 +36,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constrainedWidth="true"
+        android:autoLink="all"
+        android:linksClickable="true"
         tools:text="Hi, this is a really long string" />
 
     <TextView
@@ -46,4 +48,22 @@
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivHearts"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="48dp"
+        app:layout_constraintStart_toEndOf="@+id/ivArrow"
+        app:layout_constraintTop_toBottomOf="@+id/tvTweetBody"
+        app:srcCompat="@drawable/heart" />
+
+    <ImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="40dp"
+        app:layout_constraintStart_toEndOf="@+id/ivProfileImage"
+        app:layout_constraintTop_toBottomOf="@+id/tvTweetBody"
+        app:srcCompat="@drawable/retweet_arrows" />
 </androidx.constraintlayout.widget.ConstraintLayout>

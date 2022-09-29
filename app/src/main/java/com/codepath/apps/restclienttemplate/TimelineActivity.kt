@@ -42,14 +42,14 @@ class TimelineActivity : AppCompatActivity() {
 
         rvTweets = findViewById(R.id.rvTweets)
         adapter = TweetsAdapter(tweets)
-
-        rvTweets.layoutManager = LinearLayoutManager(this)
         var linearLayoutManager = LinearLayoutManager(this)
+        rvTweets.layoutManager = linearLayoutManager
         scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-//                loadMoreData()
+                loadMoreData()
+                Log.i(TAG, "onLoadMore: $page")
             }
         }
         rvTweets.addOnScrollListener(scrollListener)
@@ -61,36 +61,37 @@ class TimelineActivity : AppCompatActivity() {
         populateHomeTimeline()
     }
 
-//    fun loadMoreData() {
+    fun loadMoreData() {
 //        // 1. Send an API request to retrieve appropriate paginated data
 //        // 2. Deserialize and construct new model objects from the API response
 //        // 3. Append the new data objects to the existing set of items inside the array of items
 //        // 4. Notify the adapter of the new items made with `notifyItemRangeInserted()`
-//        client.getNextPageOfTweets(object : JsonHttpResponseHandler() {
-//            override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
-//                Log.i(TAG, "onSuccess!")
-//                val jsonArray = json.jsonArray
-//                try {
-//                    val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
-//                    tweets.addAll(listOfNewTweetsRetrieved)
-//                    adapter.notifyItemRangeInserted()
-//
-//                } catch (e: JSONException) {
-//                    Log.e(TAG, "JSON Exception $e")
-//                }
-//            }
-//
-//            override fun onFailure(
-//                statusCode: Int,
-//                headers: Headers?,
-//                response: String?,
-//                throwable: Throwable?
-//            ) {
-//                Log.i(TAG, "onFailure $response $statusCode")
-//
-//            }
-//        })
-//    }
+        client.getNextPageOfTweets(object : JsonHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
+                Log.i(TAG, "onSuccess for loadMoreData!")
+                val jsonArray = json.jsonArray
+                try {
+                    val currentSize = tweets.size - 1
+                    val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
+                    tweets.addAll(listOfNewTweetsRetrieved)
+                    adapter.notifyItemRangeInserted(currentSize, listOfNewTweetsRetrieved.size)
+
+                } catch (e: JSONException) {
+                    Log.e(TAG, "JSON Exception $e")
+                }
+            }
+
+            override fun onFailure(
+                statusCode: Int,
+                headers: Headers?,
+                response: String?,
+                throwable: Throwable?
+            ) {
+                Log.i(TAG, "onFailure loadMoreData $response $throwable")
+
+            }
+        }, tweets.get(tweets.size - 1).id)
+    }
 
     fun populateHomeTimeline() {
         client.getHomeTimeline(object : JsonHttpResponseHandler() {
