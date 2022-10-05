@@ -29,7 +29,7 @@ class ComposeActivity : AppCompatActivity() {
         tvCount = findViewById(R.id.tvCount)
 
         client = TwitterApplication.getRestClient(this)
-        tvCount.text = "0"
+        tvCount.text = "280"
 
 
         etCompose.addTextChangedListener(object:TextWatcher {
@@ -42,10 +42,11 @@ class ComposeActivity : AppCompatActivity() {
                 val tweetContent = etCompose.text.toString()
                 val tweetLength = tweetContent.length
                 if (tweetContent.isEmpty()) {
-                    tvCount.text = "0"
+                    tvCount.text = "280"
                 }
                 else {
-                    tvCount.text = tweetLength.toString()
+                    val lengthLeft = tweetLength - 280
+                    tvCount.text = lengthLeft.toString()
                     btnTweet.isEnabled = tweetLength <= 280
                 }
             }
