@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.codepath.apps.restclienttemplate.models.Tweet
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
@@ -16,7 +17,7 @@ import okhttp3.Headers
 class ComposeActivity : AppCompatActivity() {
     lateinit var etCompose: EditText
     lateinit var btnTweet: Button
-    lateinit var tvCount: Button
+    lateinit var tvCount: TextView
 
     lateinit var client: TwitterClient
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,22 +29,29 @@ class ComposeActivity : AppCompatActivity() {
         tvCount = findViewById(R.id.tvCount)
 
         client = TwitterApplication.getRestClient(this)
+        tvCount.text = "0"
 
 
         etCompose.addTextChangedListener(object:TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("Not yet implemented")
+                Log.i(TAG,"beforeChange")
+
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val tweetContent = etCompose.text.toString()
-                val tweetLength =tweetContent.length
-                tvCount.text = tweetLength.toString()
-                btnTweet.isEnabled = tweetLength <= 280
+                val tweetLength = tweetContent.length
+                if (tweetContent.isEmpty()) {
+                    tvCount.text = "0"
+                }
+                else {
+                    tvCount.text = tweetLength.toString()
+                    btnTweet.isEnabled = tweetLength <= 280
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                TODO("Not yet implemented")
+                Log.i(TAG,"afterChange")
             }
 
         })

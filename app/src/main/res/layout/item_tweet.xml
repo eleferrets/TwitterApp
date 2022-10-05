@@ -62,7 +62,7 @@
         android:id="@+id/ivArrow"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="50dp"
         app:layout_constraintStart_toEndOf="@+id/ivProfileImage"
         app:layout_constraintTop_toBottomOf="@+id/tvTweetBody"
         app:srcCompat="@drawable/retweet_arrows" />
