@@ -1,8 +1,12 @@
 package com.codepath.apps.restclienttemplate
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -61,11 +65,45 @@ class TimelineActivity : AppCompatActivity() {
         populateHomeTimeline()
     }
 
+    // Override and inflate the menu we created for the compose icon
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    // Handles clicks for menu item
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.compose) {
+//        Toast.makeText(this, "Ready to compose tweet!", Toast.LENGTH_SHORT).show()
+//        Navigate to compose screen
+            val intent = Intent(this, ComposeActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    // Called when we come back from ComposeActivity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Get data from tweet intent
+            val tweet = data?.getParcelableExtra("tweet") as Tweet
+
+            // Update timeline
+            // Modify data source of tweets
+            tweets.add(0, tweet)
+            // Update adapter
+            adapter.notifyItemInserted(0)
+            // Prevents the scroll up yourself
+            rvTweets.smoothScrollToPosition(0)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     fun loadMoreData() {
-//        // 1. Send an API request to retrieve appropriate paginated data
-//        // 2. Deserialize and construct new model objects from the API response
-//        // 3. Append the new data objects to the existing set of items inside the array of items
-//        // 4. Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        // 1. Send an API request to retrieve appropriate paginated data
+        // 2. Deserialize and construct new model objects from the API response
+        // 3. Append the new data objects to the existing set of items inside the array of items
+        // 4. Notify the adapter of the new items made with `notifyItemRangeInserted()`
         client.getNextPageOfTweets(object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
                 Log.i(TAG, "onSuccess for loadMoreData!")
@@ -126,5 +164,6 @@ class TimelineActivity : AppCompatActivity() {
 
     companion object {
         val TAG = "TimelineActivity"
+        val REQUEST_CODE = 10
     }
 }
