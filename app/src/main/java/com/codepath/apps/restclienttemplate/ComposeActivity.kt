@@ -45,7 +45,7 @@ class ComposeActivity : AppCompatActivity() {
                     tvCount.text = "280"
                 }
                 else {
-                    val lengthLeft = tweetLength - 280
+                    val lengthLeft = 280-tweetLength
                     tvCount.text = lengthLeft.toString()
                     btnTweet.isEnabled = tweetLength <= 280
                 }
