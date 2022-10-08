@@ -36,10 +36,10 @@ class TimelineActivity : AppCompatActivity() {
         client = TwitterApplication.getRestClient(this)
 
         fab = findViewById(R.id.compose)
-fab.setOnClickListener{
-        val intent = Intent(this, ComposeActivity::class.java)
-    startActivityForResult(intent, REQUEST_CODE)
-}
+        fab.setOnClickListener {
+            val intent = Intent(this, ComposeActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE)
+        }
 
         swipeContainer = findViewById(R.id.swipeContainer)
         swipeContainer.setOnRefreshListener {
